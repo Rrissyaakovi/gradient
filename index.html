@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Canvas Gradient</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css">
+</head>
+<body>
+
+<canvas id="myCanvas" width="400" height="200"></canvas>
+<div id="slider"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
+<script>
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const slider = document.getElementById("slider");
+
+  // Инициализация градиента
+  let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  gradient.addColorStop(0, "red");
+  gradient.addColorStop(0.5, "green");
+  gradient.addColorStop(1, "blue");
+
+  // Функция обновления градиента и отрисовки
+  function updateGradientAndDraw() {
+    // Обновляем градиент на основе значений ползунков
+    gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, `rgba(255, 0, 0, ${slider.noUiSlider.get()[0] / 100})`);
+    gradient.addColorStop(0.5, `rgba(0, 255, 0, ${slider.noUiSlider.get()[1] / 100})`);
+    gradient.addColorStop(1, `rgba(0, 0, 255, ${slider.noUiSlider.get()[2] / 100})`);
+
+    // Заполняем прямоугольник новым градиентом
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Инициализация ползунков
+  noUiSlider.create(slider, {
+    start: [0, 50, 100], // Начальные значения для трех ползунков
+    connect: true,      // Связывание ползунков
+    range: {
+      min: 0,
+      max: 100
+    }
+  });
+
+  // Обработка изменений ползунков
+  slider.noUiSlider.on("update", function () {
+    // Вызываем функцию обновления при изменении ползунков
+    updateGradientAndDraw();
+  });
+
+  // Начальная отрисовка
+  updateGradientAndDraw();
+</script>
+
+</body>
+</html>
